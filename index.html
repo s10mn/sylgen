@@ -1,135 +1,209 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="de">
   <head>
+      <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Syllabus-Generator</title>
-    <meta charset="UTF-8">
+    <link href="vendor/css/fontawesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="vendor/js/js.cookie.js"></script>
     <style>
-      @media (min-width: 768px) { .container{ max-width: 700px }
+      @media (min-width: 768px) {
+        .container{ max-width: 700px }
+      }
+      .tooltip-inner {
+        white-space:nowrap;
+        max-width:none;
+      }
+      #preview { display:none }
+      @media only screen and (any-hover){
+        #preview { display:block }
+        #preview:hover span {display:none}
+        #preview:hover:before {content:"In die Zwischenablage kopieren"}
+      }
     </style>
   </head>
   <body>
+    <a class="github-fork-ribbon" href="http://github.com/ktiu/sylgen" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
     <div class="container">
-      <h1 class="mt-5">Syllabus-Generator</h1>
-        <p class="mt-4">Die hier eingegebenen Daten werden nur zur Generierung des Syllabus verwendet und nirgends gespeichert.</p>
-      <form class="mt-4" id="syllabusForm">
-        <legend>Angaben zur Veranstaltung</legend>
-        <div class="form-group">
-          <label for="title">Titel der Veranstaltung</label>
-          <input type="text" name="title" class="form-control" id="title">
+      <h1 class="mt-3">Syllabus-Generator</h1>
+      <div class="card mt-4 mb-4 bg-light border-info">
+        <div class="card-body">
+          <p class="mb-0">Die hier eingegebenen Daten werden nur zur Generierung des Syllabus verwendet. Sie werden weder serverseitig gespeichert noch an Dritte weitergegeben.</p>
         </div>
-        <div class="form-group">
-          <label for="module">Bezeichnung des Moduls <i>(optional)</i></label>
-          <input type="text" name="module" class="form-control" id="modul">
-        </div>
-        <legend class="mt-4">Angaben zur Dozent*in</legend>
-        <div class="row form-group">
-          <div class="col">
-            <label for="name">Name der Dozent*in</label>
-            <input type="text" name="name" class="form-control" id="name">
-          </div>
-          <div class="col">
-            <label for="email">E-Mail-Adresse</label>
-            <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="website">Webseite <i>(optional)</i></label> 
-          <input type="url" name="website" class="form-control" id="website">
-        </div>
-        <legend class="mt-4">Termine</legend>
+      </div>
+      <form class="mt-3 mb-3" id="syllabusForm">
         <div class="form-group row">
-          <label for="term" class="col-sm-2 col-form-label">Semester</label>
-          <div class="col-sm-10">
-            <select name="term" id="term" class="form-control">
-              <option selected value="Wintersemester 2019/20">Wintersemester 2019/20</option>
+          <label for="uni" class="col-sm-3 col-form-label">Universität <span class="text-danger">*</span></label>
+          <div class="col-sm-9">
+            <select class="form-control" id="uni" name="uni">
+              <!-- populated by formControl.js //-->
             </select>
+            <small class="form-text text-right text-muted">
+              <a href="https://github.com/ktiu/sylgen#universität-hinzufügen">Universität hinzufügen</a>
+            </small>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">Wochentag</label><br/>
-          <div class="col-sm-10">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="weekdays[]" id="monday" value=1>
-              <label class="form-check-label" for="monday">Montag</label>
+          <label for="term" class="col-sm-3 col-form-label">Semester <span class="text-danger">*</span></label>
+          <div class="col-sm-9">
+            <select name="term" id="term" class="form-control">
+              <!-- populated by formControl.js //-->
+            </select>
+            <small class="form-text text-right text-muted">
+              <a href="https://github.com/ktiu/sylgen#semesterdaten-hinzufügen">Semestertermine hinzufügen</a>
+            </small>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">Wochentage</label><br/>
+          <div class="col-sm-9 d-flex">
+            <div class="flex-md-fill mr-4">
+              <div class="form-check">
+                <input class="form-check-input weekdays" type="checkbox" name="weekdays[]" id="monday" value=1>
+                <label class="form-check-label" for="monday">Montag</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input weekdays" type="checkbox" name="weekdays[]"  id="tuesday" value=2>
+                <label class="form-check-label" for="tuesday">Dienstag</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input weekdays" type="checkbox" name="weekdays[]" id="wendnesday" value=3>
+                <label class="form-check-label" for="wendnesday">Mittwoch</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input weekdays" type="checkbox" name="weekdays[]" id="thursday" value=4>
+                <label class="form-check-label" for="thursday">Donnerstag</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input weekdays" type="checkbox" name="weekdays[]" id="friday" value=5>
+                <label class="form-check-label" for="friday">Freitag</label>
+              </div>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="weekdays[]"  id="tuesday" value=2>
-              <label class="form-check-label" for="tuesday">Dienstag</label>
+            <small class="flex-md-fill form-text text-muted">
+              <p>
+                Mit diesen Angaben werden die Veranstaltungstermine automatisch generiert und in den Syllabus eingefügt.
+              </p>
+              <p id="termMessage">
+                <!-- filled by formControl.js //-->
+              </p>
+              <div id="preview" class="btn btn-sm btn-block btn-outline-info" data-toggle="tooltip" data-placement="top">
+                <span>Vorschau</span>
+              </div> 
+            </small>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="presetDepartment" class="col-sm-3 col-form-label">Institution</label>
+          <div class="col-sm-9">
+            <div class="form-group">
+              <select class="form-control" id="presetDepartment" name="presetDepartment">
+                <!-- formControl.js populates this from departments.json //-->
+              </select>
+              <small class="form-text text-right text-muted">
+                <a href="https://github.com/ktiu/sylgen#institution-hinzufügen">Institution hinzufügen</a>
+              </small>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="weekdays[]" id="wendnesday" value=3>
-              <label class="form-check-label" for="wendnesday">Mittwoch</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="weekdays[]" id="thursday" value=4>
-              <label class="form-check-label" for="thursday">Donnerstag</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="weekdays[]" id="friday" value=5>
-              <label class="form-check-label" for="friday">Freitag</label>
+            <div class="form-group">
+              <textarea class="form-control collapse" id="customDepartment" name="customDepartment" placeholder="Institut
+Fachbereich"></textarea>
             </div>
           </div>
         </div>
-        <div class="form-group">
-        <input type="submit" value="Syllabus generieren" class="btn btn-primary">
+        <div class="form-group row">
+          <label for="title"class="col-sm-3 col-form-label">Veranstaltung</label>
+          <div class="col-sm-9">
+            <div class="form-group">
+              <input type="text" name="title" class="form-control" id="title" placeholder="Titel">
+            </div>
+            <div class="form-group">
+              <input type="text" name="module" class="form-control" id="module" placeholder="Modul">
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <input type="text" name="room" class="form-control" id="room" placeholder="Raum">
+              </div>
+              <div class="col-md-6 form-group">
+                <input type="text" name="time" class="form-control" id="time" placeholder="Uhrzeit">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="title"class="col-sm-3 col-form-label">Dozent*in</label>
+          <div class="col-sm-9">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <input type="text" name="name" class="form-control" id="name" placeholder="Name">
+              </div>
+              <div class="col-md-6 form-group">
+                <input type="text" name="email" class="form-control" id="email" placeholder="E-Mail">
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" name="website" class="form-control" id="website" placeholder="Webseite">
+            </div>
+          </div>
+        </div>
+        <div class="card mb-1">
+          <div class="card-header area-toggle" id="advancedHeader" aria-expanded="false" aria-controls="advancedDetails">
+            <i class="far fa-plus-square mr-2"></i>
+            Ausgabeoptionen
+          </div>
+          <div id="advancedDetails" class="collapse card-body" aria-labelledby="advancedHeader"> 
+            <!--
+            <div class="row form-group">
+              <div class="col col-sm-4">
+                Ausgabeformat <span class="text-danger">*</span>
+              </div>
+              <div class="col col-sm-8">
+                <select name="format" id="format" class="form-control">
+                  <option value="docx" selected>Word-Dokument (.docx)</option>
+                  <option value="md">Markdown (.md)</option>
+                </select>
+              </div>
+            </div>
+            //-->
+            <div id="chooseSections">
+              <!--- formControl.js populates this //-->
+            </div>
+          </div>
+        </div>
+        <p class="text-right form-text text-muted">
+          <small><span class="text-danger">*)</span> Erforderliche Angaben</small>
+        </p>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-check text-center">
+              <input class="form-check-input" type="checkbox" id="remember" value="remember" name="remember" checked> 
+              <label class="form-check-label" for="remember">Diese Angaben für den nächsten Besuch merken</label> 
+            </div>
+            <p class="btn-link text-center" id="forget">Zurücksetzen</p>
+          </div>
+          <div class="col-md-4">
+            <input type="submit" value="Syllabus generieren" class="form-control btn btn-primary btn-lg">
+          </div>
+        </div>
       </form>
     </div>
   </body>
-  <script src="js//docxtemplater.js"></script>
-  <script src="js/pizzip.js"></script>
-  <script src="js/FileSaver.js"></script>
-  <script src="js/pizzip-utils.js"></script>
+  <script src="vendor/js/docxtemplater.js"></script>
+  <script src="vendor/js/pizzip.js"></script>
+  <script src="vendor/js/FileSaver.js"></script>
+  <script src="vendor/js/pizzip-utils.js"></script>
   <!--
   Mandatory in IE 6, 7, 8 and 9.
   -->
   <!--[if IE]>
-      <script type="text/javascript" src="https://raw.githubusercontent.com/open-xml-templating/pizzip/v3.0.4/dist/pizzip-utils-ie.js"></script>
+      <script type="text/javascript" src="vendor/js/pizzip-utils-ie.js"></script>
   <![endif]-->
-  <script src="js/jquery.serializejson.js"></script>
-  <script src="js/termDates.js"></script>
-  <script>
-    function loadFile(url,callback){
-        PizZipUtils.getBinaryContent(url,callback);
-    }
-    function generate(syllabusTemplate, syllabusData) {
-        event.preventDefault();
-        loadFile(syllabusTemplate, function(error,content){
-            if (error) { throw error };
-            var zip = new PizZip(content);
-            var doc=new window.docxtemplater().loadZip(zip)
-            doc.setData(syllabusData);
-            try {
-                // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
-                doc.render()
-            }
-            catch (error) {
-                var e = {
-                    message: error.message,
-                    name: error.name,
-                    stack: error.stack,
-                    properties: error.properties,
-                }
-                console.log(JSON.stringify({error: e}));
-                // The error thrown here contains additional information when logged with JSON.stringify (it contains a property object).
-                throw error;
-            }
-            var out=doc.getZip().generate({
-                type:"blob",
-                mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            }) //Output the document using Data-URI
-            saveAs(out,"syllabus.docx")
-        })
-    }
-    $( "#syllabusForm").submit(function(event) {
-      event.preventDefault();
-      var syllabusData = $(this).serializeJSON();
-      syllabusData.days = [];
-      syllabusData.days = getDaysForTerm(syllabusData.term, syllabusData.weekdays);
-      console.log(syllabusData);
-      generate("syllabus_template.docx", syllabusData);
-    });
-  </script>
+  <script src="vendor/js/jquery.serializejson.js"></script>
+  <script src="vendor/js/js-yaml.min.js"></script>
+  <script src="js/generateDocx.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/formControl.js"></script>
 </html>
